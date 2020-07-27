@@ -1,9 +1,9 @@
 'use strict';
 
-var util = require('util'),
-    assert = require('assert'),
-    FlushWritable = require('flushwritable'),
-    _ = require('lodash');
+const util = require('util');
+const assert = require('assert');
+const FlushWritable = require('flushwritable');
+const _ = require('lodash');
 
 util.inherits(ElasticsearchWritable, FlushWritable);
 
@@ -16,7 +16,7 @@ util.inherits(ElasticsearchWritable, FlushWritable);
  */
 function transformRecords(records, isSuggestionIndex) {
     return records.reduce(function(bulkOperations, record) {
-        var operation = {};
+        let operation = {};
         let type = record.type ? { _type: record.type } : {}
 
         operation[record.action] = {
@@ -86,10 +86,10 @@ function ElasticsearchWritable(client, options) {
     FlushWritable.call(this, this.options);
 
     this.client = client;
-    this.logger = options.logger || null;
+    this.logger = this.options.logger || null;
 
-    this.highWaterMark = options.highWaterMark || 16;
-    this.flushTimeout = options.flushTimeout || null;
+    this.highWaterMark = this.options.highWaterMark || 16;
+    this.flushTimeout = this.options.flushTimeout || null;
     this.isSuggestionIndex = this.options.isSuggestionIndex || false;
     this.writtenRecords = 0;
     this.queue = [];
@@ -111,9 +111,9 @@ ElasticsearchWritable.prototype.bulkWrite = function bulkWrite(records, callback
         }
 
         if (data.errors === true) {
-            var errors = _.chain(data.items)
+            let errors = _.chain(data.items)
                 .map(function(item) {
-                    var error = _.map(item, 'error')[0];
+                    let error = _.map(item, 'error')[0];
 
                     if (_.isObject(error) && error.type) {
                         error = error.type + '[' + error.reason + ']';
@@ -129,7 +129,7 @@ ElasticsearchWritable.prototype.bulkWrite = function bulkWrite(records, callback
                 errors.forEach(this.logger.error.bind(this.logger));
             }
 
-            var error = new Error(errors);
+            let error = new Error(errors);
             error.records = records;
 
             return callback(error);
@@ -151,7 +151,7 @@ ElasticsearchWritable.prototype.partialUpdate = function partialUpdate(operation
         this.logger.debug('Executing update_by_query in Elasticsearch');
     }
 
-    var op = _.cloneDeep(operation);
+    let op = _.cloneDeep(operation);
     delete op.action;
 
     this.client.updateByQuery(op, function bulkCallback(err, data) {
@@ -165,7 +165,7 @@ ElasticsearchWritable.prototype.partialUpdate = function partialUpdate(operation
                 data.failures.forEach(this.logger.error.bind(this.logger));
             }
 
-            var error = new Error('One or more failures occurred during update_by_query.');
+            let error = new Error('One or more failures occurred during update_by_query.');
             error.operation = operation;
 
             return callback(error);
@@ -189,6 +189,7 @@ ElasticsearchWritable.prototype.partialUpdate = function partialUpdate(operation
  * @return {undefined}
  */
 ElasticsearchWritable.prototype._flush = function _flush(callback) {
+    let records;
     clearTimeout(this.flushTimeoutId);
 
     if (this.queue.length === 0) {
@@ -196,12 +197,12 @@ ElasticsearchWritable.prototype._flush = function _flush(callback) {
     }
 
     try {
-        var records = transformRecords(this.queue, this.isSuggestionIndex);
+        records = transformRecords(this.queue, this.isSuggestionIndex);
     } catch (error) {
         return callback(error);
     }
 
-    var recordsCount = this.queue.length;
+    let recordsCount = this.queue.length;
     this.queue = [];
 
     if (this.logger) {

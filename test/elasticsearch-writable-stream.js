@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
     chai = require('chai'),
     sinon = require('sinon'),
     sinonChai = require('sinon-chai'),
@@ -8,20 +8,20 @@ var _ = require('lodash'),
 
 chai.use(sinonChai);
 
-var expect = chai.expect;
+const expect = chai.expect;
 
-var recordFixture = require('./fixture/record.json');
-var recordDeleteFixture = require('./fixture/record-delete.json');
-var recordParentFixture = require('./fixture/record-parent.json');
-var recordUpdateFixture = require('./fixture/record-update.json');
-var recordUpdateByQueryFixture = require('./fixture/record-update-by-query.json');
-var successResponseFixture = require('./fixture/success-response.json');
-var successDeleteResponseFixture = require('./fixture/success-delete-response.json');
-var successParentResponseFixture = require('./fixture/success-parent-response.json');
-var successUpdateResponseFixture = require('./fixture/success-update-response.json');
-var successUpdateByQueryResponseFixture = require('./fixture/success-update-by-query-response.json');
-var errorResponseFixture = require('./fixture/error-response.json');
-var errorObjectResponseFixture = require('./fixture/error-object-response');
+const recordFixture = require('./fixture/record.json');
+const recordDeleteFixture = require('./fixture/record-delete.json');
+const recordParentFixture = require('./fixture/record-parent.json');
+const recordUpdateFixture = require('./fixture/record-update.json');
+const recordUpdateByQueryFixture = require('./fixture/record-update-by-query.json');
+const successResponseFixture = require('./fixture/success-response.json');
+const successDeleteResponseFixture = require('./fixture/success-delete-response.json');
+const successParentResponseFixture = require('./fixture/success-parent-response.json');
+const successUpdateResponseFixture = require('./fixture/success-update-response.json');
+const successUpdateByQueryResponseFixture = require('./fixture/success-update-by-query-response.json');
+const errorResponseFixture = require('./fixture/error-response.json');
+const errorObjectResponseFixture = require('./fixture/error-object-response');
 
 function getMissingFieldTest(fieldName, testFixture) {
     return function(done) {
@@ -41,7 +41,7 @@ function getMissingFieldTest(fieldName, testFixture) {
 
 describe('ElasticsearchWritable', function() {
     beforeEach(function() {
-        this.sinon = sinon.sandbox.create();
+        this.sinon = sinon.createSandbox();
     });
 
     afterEach(function() {
@@ -174,9 +174,6 @@ describe('ElasticsearchWritable', function() {
         });
 
         it('should throw error on index missing in record', getMissingFieldTest('index'));
-
-        it('should throw error on type missing in record', getMissingFieldTest('type'));
-
         it('should throw error on body missing in record', getMissingFieldTest('body'));
     });
 
