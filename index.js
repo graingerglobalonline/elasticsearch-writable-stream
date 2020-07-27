@@ -52,7 +52,6 @@ function transformRecords(records, isSuggestionIndex) {
  */
 function validateOperation(operation) {
     assert(operation.index, 'index is required');
-    assert(operation.type, 'type is required');
 
     operation.action = operation.action || 'index';
 
