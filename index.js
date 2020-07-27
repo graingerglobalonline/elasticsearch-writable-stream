@@ -14,7 +14,7 @@ util.inherits(ElasticsearchWritable, FlushWritable);
  * @param {array} records
  * @return {array}
  */
-function transformRecords(records) {
+function transformRecords(records, isSuggestionIndex) {
     return records.reduce(function(bulkOperations, record) {
         var operation = {};
 
@@ -31,7 +31,11 @@ function transformRecords(records) {
         bulkOperations.push(operation);
 
         if (record.action !== 'delete') {
-            bulkOperations.push(record.body);
+            bulkOperations.push(
+                isSuggestionIndex
+                    ? { suggest: record.body }
+                    : record.body
+            );
         }
 
         return bulkOperations;
@@ -76,16 +80,17 @@ function validateOperation(operation) {
 function ElasticsearchWritable(client, options) {
     assert(client, 'client is required');
 
-    options = options || {};
-    options.objectMode = true;
+    this.options = options || {};
+    this.options.objectMode = true;
 
-    FlushWritable.call(this, options);
+    FlushWritable.call(this, this.options);
 
     this.client = client;
     this.logger = options.logger || null;
 
     this.highWaterMark = options.highWaterMark || 16;
     this.flushTimeout = options.flushTimeout || null;
+    this.isSuggestionIndex = this.options.isSuggestionIndex || false;
     this.writtenRecords = 0;
     this.queue = [];
 }
@@ -191,7 +196,7 @@ ElasticsearchWritable.prototype._flush = function _flush(callback) {
     }
 
     try {
-        var records = transformRecords(this.queue);
+        var records = transformRecords(this.queue, this.isSuggestionIndex);
     } catch (error) {
         return callback(error);
     }
