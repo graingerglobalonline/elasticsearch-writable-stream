@@ -1,6 +1,6 @@
 {
   "name": "@graingerglobalonline/elasticsearch-writable-stream",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A writable stream for doing operations in Elasticsearch",
   "main": "index.js",
   "scripts": {
