@@ -1,5 +1,5 @@
 {
-  "name": "elasticsearch-writable-stream",
+  "name": "@graingerglobalonline/elasticsearch-writable-stream",
   "version": "2.0.1",
   "description": "A writable stream for doing operations in Elasticsearch",
   "main": "index.js",
@@ -25,8 +25,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:voldern/elasticsearch-writable-stream.git"
+    "url": "git@github.com:graingerglobalonline/elasticsearch-writable-stream.git"
   },
+
   "keywords": [
     "elasticsearch",
     "stream",
