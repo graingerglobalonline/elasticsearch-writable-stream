@@ -17,11 +17,12 @@ util.inherits(ElasticsearchWritable, FlushWritable);
 function transformRecords(records, isSuggestionIndex) {
     return records.reduce(function(bulkOperations, record) {
         var operation = {};
+        let type = record.type ? { _type: record.type } : {}
 
         operation[record.action] = {
             _index: record.index,
-            _type: record.type,
-            _id: record.id
+            _id: record.id,
+            ...type
         };
 
         if (record.parent) {
